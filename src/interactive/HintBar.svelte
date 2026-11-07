@@ -15,6 +15,7 @@
       <li><kbd>←</kbd><kbd>→</kbd><span>Shelf</span></li>
       <li><kbd>↑</kbd><kbd>↓</kbd><span>Browse</span></li>
       <li><kbd class="wide">Enter</kbd><span>Open</span></li>
+      <li><kbd>M</kbd><span>Sound</span></li>
       <li><kbd>P</kbd><span>Plain mode</span></li>
     {/if}
   </ul>

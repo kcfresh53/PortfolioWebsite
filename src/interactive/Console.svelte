@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { categories } from '../data/catalog';
   import Backdrop from './Backdrop.svelte';
   import BootSplash from './BootSplash.svelte';
@@ -10,6 +10,7 @@
   import Hud from './Hud.svelte';
   import InfoPanel from './InfoPanel.svelte';
   import { attachInput, attachSwipe } from './input';
+  import { SoundBank } from './sound.svelte';
   import Stack from './Stack.svelte';
 
   interface Props {
@@ -21,7 +22,32 @@
 
   const nav: ConsoleState = new ConsoleState();
   const plainHref: string = $derived(`${root}plain/`);
+  // The site root never changes for a mounted page, so read it once.
+  const sfx: SoundBank = new SoundBank(untrack((): string => root));
   let stageEl: HTMLElement | undefined = $state();
+
+  function browseCategory(delta: number): void {
+    sfx.play(nav.moveCategory(delta) ? 'category' : 'blocked');
+  }
+
+  function browseItem(delta: number): void {
+    sfx.play(nav.moveItem(delta) ? 'item' : 'blocked');
+  }
+
+  function browseGallery(delta: number): void {
+    sfx.play(nav.moveGallery(delta) ? 'gallery' : 'blocked');
+  }
+
+  function openDetail(): void {
+    nav.open();
+    sfx.play('open');
+  }
+
+  function closeDetail(): void {
+    if (!nav.detailOpen) return;
+    nav.close();
+    sfx.play('close');
+  }
 
   nav.applyHash(window.location.hash);
 
@@ -30,43 +56,51 @@
     window.history.replaceState(null, '', nav.hash);
   });
 
-  onMount((): (() => void) =>
-    attachInput({
+  onMount((): (() => void) => {
+    const detachUnlock: () => void = sfx.attachUnlock();
+    const detachInput: () => void = attachInput({
       move(dx: number, dy: number): boolean {
         if (nav.detailOpen) {
           // Up/down scroll the sheet natively; left/right flip through the gallery.
           if (dx === 0) return false;
-          nav.moveGallery(dx);
+          browseGallery(dx);
           return true;
         }
-        if (dx !== 0) nav.moveCategory(dx);
-        if (dy !== 0) nav.moveItem(dy);
+        if (dx !== 0) browseCategory(dx);
+        if (dy !== 0) browseItem(dy);
         return true;
       },
       confirm(): void {
-        if (!nav.detailOpen) nav.open();
+        if (!nav.detailOpen) openDetail();
       },
       back(): void {
-        nav.close();
+        closeDetail();
       },
       shoulder(delta: number): void {
-        if (!nav.detailOpen) nav.moveCategory(delta);
+        if (!nav.detailOpen) browseCategory(delta);
       },
       toggleMode(): void {
         window.location.assign(plainHref);
       },
+      toggleSound(): void {
+        sfx.toggle();
+      },
       canBrowse(): boolean {
         return !nav.detailOpen;
       },
-    }),
-  );
+    });
+    return (): void => {
+      detachUnlock();
+      detachInput();
+    };
+  });
 
   $effect(() => {
     if (stageEl === undefined) return;
     return attachSwipe(stageEl, (dx: number, dy: number): void => {
       if (nav.detailOpen) return;
-      if (dx !== 0) nav.moveCategory(dx);
-      if (dy !== 0) nav.moveItem(dy);
+      if (dx !== 0) browseCategory(dx);
+      if (dy !== 0) browseItem(dy);
     });
   });
 </script>
@@ -75,8 +109,13 @@
   <Backdrop accent={nav.entry.accent} />
 
   <div class="shell" inert={nav.detailOpen}>
-    <Hud {plainHref} />
-    <CategoryRail {categories} index={nav.categoryIndex} onselect={(index: number): void => nav.setCategory(index)} />
+    <Hud {plainHref} soundOn={sfx.enabled} ontogglesound={(): void => sfx.toggle()} />
+    <CategoryRail
+      {categories}
+      index={nav.categoryIndex}
+      onselect={(index: number): void => sfx.play(nav.setCategory(index) ? 'category' : 'select')}
+      onhover={(): void => sfx.play('hover')}
+    />
 
     <main class="stage" bind:this={stageEl}>
       {#key nav.categoryIndex}
@@ -84,8 +123,9 @@
           entries={nav.entries}
           active={nav.itemIndex}
           {root}
-          onselect={(index: number): void => nav.selectItem(index)}
-          onopen={(): void => nav.open()}
+          onselect={(index: number): void => sfx.play(nav.selectItem(index) ? 'item' : 'blocked')}
+          onopen={openDetail}
+          onhover={(): void => sfx.play('hover')}
         />
       {/key}
       <InfoPanel
@@ -93,7 +133,7 @@
         category={nav.category}
         position={nav.itemIndex + 1}
         total={nav.entries.length}
-        onopen={(): void => nav.open()}
+        onopen={openDetail}
       />
     </main>
 
@@ -105,8 +145,8 @@
       entry={nav.entry}
       {root}
       galleryIndex={nav.galleryIndex}
-      onclose={(): void => nav.close()}
-      ongallery={(index: number): void => nav.selectGallery(index)}
+      onclose={closeDetail}
+      ongallery={(index: number): void => sfx.play(nav.selectGallery(index) ? 'gallery' : 'blocked')}
     />
   {/if}
 

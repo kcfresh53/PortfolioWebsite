@@ -17,7 +17,9 @@ export type IconName =
   | 'mail'
   | 'close'
   | 'chevron-left'
-  | 'chevron-right';
+  | 'chevron-right'
+  | 'volume'
+  | 'volume-off';
 
 export type LinkKind = 'play' | 'store' | 'site' | 'code' | 'paper' | 'video' | 'mail';
 

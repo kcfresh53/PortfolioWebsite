@@ -33,20 +33,27 @@ export class ConsoleState {
     return `#${this.category.id}/${this.entry.id}${this.detailOpen ? '/open' : ''}`;
   }
 
-  setCategory(index: number): void {
-    this.categoryIndex = clamp(index, 0, categories.length - 1);
+  /** The navigation methods return true when the selection actually changed (false at the ends of a shelf). */
+  setCategory(index: number): boolean {
+    const next: number = clamp(index, 0, categories.length - 1);
+    const changed: boolean = next !== this.categoryIndex;
+    this.categoryIndex = next;
+    return changed;
   }
 
-  moveCategory(delta: number): void {
-    this.setCategory(this.categoryIndex + delta);
+  moveCategory(delta: number): boolean {
+    return this.setCategory(this.categoryIndex + delta);
   }
 
-  selectItem(index: number): void {
-    this.itemIndices[this.categoryIndex] = clamp(index, 0, this.entries.length - 1);
+  selectItem(index: number): boolean {
+    const next: number = clamp(index, 0, this.entries.length - 1);
+    const changed: boolean = next !== this.itemIndex;
+    this.itemIndices[this.categoryIndex] = next;
+    return changed;
   }
 
-  moveItem(delta: number): void {
-    this.selectItem(this.itemIndex + delta);
+  moveItem(delta: number): boolean {
+    return this.selectItem(this.itemIndex + delta);
   }
 
   open(): void {
@@ -58,13 +65,16 @@ export class ConsoleState {
     this.detailOpen = false;
   }
 
-  selectGallery(index: number): void {
+  selectGallery(index: number): boolean {
     const count: number = this.entry.media.length;
-    this.galleryIndex = count === 0 ? 0 : clamp(index, 0, count - 1);
+    const next: number = count === 0 ? 0 : clamp(index, 0, count - 1);
+    const changed: boolean = next !== this.galleryIndex;
+    this.galleryIndex = next;
+    return changed;
   }
 
-  moveGallery(delta: number): void {
-    this.selectGallery(this.galleryIndex + delta);
+  moveGallery(delta: number): boolean {
+    return this.selectGallery(this.galleryIndex + delta);
   }
 
   /** Restores state from `#category/entry[/open]`. Unknown values are ignored. */

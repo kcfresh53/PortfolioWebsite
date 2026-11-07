@@ -1,11 +1,15 @@
 <script lang="ts">
   import { profile } from '../data/profile';
 
+  import Icon from '../lib/Icon.svelte';
+
   interface Props {
     plainHref: string;
+    soundOn: boolean;
+    ontogglesound: () => void;
   }
 
-  let { plainHref }: Props = $props();
+  let { plainHref, soundOn, ontogglesound }: Props = $props();
   let now: Date = $state(new Date());
 
   $effect(() => {
@@ -26,6 +30,9 @@
   </div>
 
   <div class="right">
+    <button class="sound" aria-pressed={soundOn} aria-label={soundOn ? 'Mute sound effects' : 'Unmute sound effects'} title="Sound effects (M)" onclick={ontogglesound}>
+      <Icon name={soundOn ? 'volume' : 'volume-off'} size={20} />
+    </button>
     <time class="clock" datetime={now.toISOString()}>{clock}</time>
     <nav class="mode" aria-label="Portfolio mode">
       <span class="seg on" aria-current="page"><i aria-hidden="true"></i>Interactive</span>
@@ -91,6 +98,29 @@
     font-size: 1.05rem;
     color: var(--ink-dim);
     letter-spacing: 0.02em;
+  }
+  .sound {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--glass);
+    border: 1px solid var(--glass-line);
+    backdrop-filter: blur(14px);
+    color: var(--ink-dim);
+    transition:
+      background 0.2s,
+      color 0.2s,
+      transform 0.25s var(--ease-pop);
+  }
+  .sound:hover {
+    background: var(--glass-strong);
+    color: #fff;
+    transform: scale(1.08);
+  }
+  .sound[aria-pressed='false'] {
+    opacity: 0.6;
   }
   .mode {
     display: flex;

@@ -6,6 +6,7 @@ export interface InputActions {
   back(): void;
   shoulder(delta: number): void;
   toggleMode(): void;
+  toggleSound(): void;
   /** False while a modal sheet owns the screen; wheel, swipe and stick input are ignored then. */
   canBrowse(): boolean;
 }
@@ -58,6 +59,10 @@ function attachKeyboard(actions: InputActions): () => void {
         break;
       case 'p':
         actions.toggleMode();
+        handled = true;
+        break;
+      case 'm':
+        actions.toggleSound();
         handled = true;
         break;
       default:

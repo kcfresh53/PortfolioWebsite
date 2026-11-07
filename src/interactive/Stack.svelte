@@ -9,6 +9,7 @@
     root: string;
     onselect: (index: number) => void;
     onopen: () => void;
+    onhover: () => void;
   }
 
   type Slot = 'past' | 'active' | 'behind' | 'far';
@@ -24,7 +25,7 @@
     return distance <= VISIBLE_BEHIND ? 'behind' : 'far';
   }
 
-  let { entries, active, root, onselect, onopen }: Props = $props();
+  let { entries, active, root, onselect, onopen, onhover }: Props = $props();
 
   let wrapEl: HTMLDivElement | undefined = $state();
   const reducedMotion: boolean = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -88,6 +89,9 @@
           aria-current={distance === 0 ? 'true' : undefined}
           aria-label={distance === 0 ? `${entry.title}. ${entry.tagline} Open details.` : `Select ${entry.title}`}
           onclick={(): void => (distance === 0 ? onopen() : onselect(i))}
+          onpointerenter={(event: PointerEvent): void => {
+            if (event.pointerType === 'mouse' && distance > 0) onhover();
+          }}
         ></button>
       </div>
     {/each}

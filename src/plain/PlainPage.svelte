@@ -12,7 +12,7 @@
 
   let { root }: Props = $props();
 
-  const HIGHLIGHT_IDS: readonly string[] = ['aqct', 'sword-and-sail', 'fresh-stacker', 'hedgehog2d'];
+  const HIGHLIGHT_IDS: readonly string[] = ['rendering-research', 'sword-and-sail', 'fresh-stacker', 'hedgehog2d'];
   const projectCategories: readonly Category[] = categories.filter((c: Category): boolean => c.id !== 'profile');
   const allEntries: readonly Entry[] = projectCategories.flatMap((c: Category): readonly Entry[] => entriesByCategory[c.id]);
   const highlights: readonly Entry[] = HIGHLIGHT_IDS.map((id: string): Entry | undefined =>

@@ -7,9 +7,10 @@
     categories: readonly Category[];
     index: number;
     onselect: (index: number) => void;
+    onhover: () => void;
   }
 
-  let { categories, index, onselect }: Props = $props();
+  let { categories, index, onselect, onhover }: Props = $props();
 </script>
 
 <div class="rail" role="tablist" aria-label="Shelves">
@@ -21,6 +22,9 @@
       aria-selected={i === index}
       style:--tile-accent={category.accent}
       onclick={(): void => onselect(i)}
+      onpointerenter={(event: PointerEvent): void => {
+        if (event.pointerType === 'mouse' && i !== index) onhover();
+      }}
     >
       <span class="icon"><Icon name={category.icon} size={i === index ? 30 : 24} /></span>
       <span class="label">{category.label}</span>

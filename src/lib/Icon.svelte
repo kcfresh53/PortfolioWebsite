@@ -26,6 +26,8 @@
     close: 'M18 6L6 18M6 6l12 12',
     'chevron-left': 'M15 18l-6-6 6-6',
     'chevron-right': 'M9 18l6-6-6-6',
+    volume: 'M11 5L6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14',
+    'volume-off': 'M11 5L6 9H2v6h4l5 4V5zM22 9l-6 6M16 9l6 6',
   };
 
   let { name, size = 20 }: Props = $props();
