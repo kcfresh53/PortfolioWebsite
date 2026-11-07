@@ -1,0 +1,88 @@
+@property --accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ff4d6d;
+}
+
+@property --accent-2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ff4d6d;
+}
+
+:root {
+  color-scheme: dark;
+  --font-ui: 'Nunito Variable', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+  --ink: #f4f6ff;
+  --ink-dim: rgb(244 246 255 / 70%);
+  --ink-faint: rgb(244 246 255 / 45%);
+  --glass: rgb(255 255 255 / 7%);
+  --glass-strong: rgb(255 255 255 / 12%);
+  --glass-line: rgb(255 255 255 / 15%);
+  --bg0: #060818;
+  --red: #e60012;
+  --blue: #00c3e3;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: var(--bg0);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
