@@ -5,7 +5,7 @@ Two views of the same content, from one data source (`src/data/`).
 | URL | What it is |
 | --- | --- |
 | `/` | **Interactive mode**: a game-console style shelf UI with a pseudo-3D card stack |
-| `/plain/` | **Plain mode**: clean, static, no-JS page. Send this link when applying for jobs |
+| `/plain/` | **Plain mode**: clean, static, no-JS page |
 
 ## Develop
 
@@ -22,7 +22,6 @@ npm run build    # outputs dist/
 2. Repo **Settings → Pages → Source: GitHub Actions**.
 3. `.github/workflows/deploy.yml` builds and publishes `dist/`.
 
-The site uses a relative base, so it works at `user.github.io/` or `user.github.io/repo/`.
 
 ## Editing content
 
@@ -33,7 +32,3 @@ Deep links: `/#games/sword-and-sail` opens a card, `/#games/sword-and-sail/open`
 ## Controls (interactive mode)
 
 Arrows / WASD browse · Enter opens · Esc goes back · M toggles sound · P switches to plain mode · mouse wheel, touch swipe and gamepad (D-pad, A/B, LB/RB) also work.
-
-### Sound effects
-
-UI sounds live in `public/sfx/` (the Nintendo 3DS HOME Menu set you supplied) and are mapped in `src/interactive/sound.svelte.ts`. They load after the first click or key press (browser autoplay rules) and the mute state is remembered. These are Nintendo's recordings, so consider swapping in your own files (same names) before publishing publicly.
